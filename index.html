@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kripa Kadodwala — Portfolio</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+
+<style>
+
+/* ============================================= */
+/* TOKENS                                         */
+/* ============================================= */
+:root{
+  --bg-top:#fff5f7;
+  --bg-bottom:#fdecef;
+  --pink:#ef7d92;
+  --pink-deep:#db5977;
+  --pink-soft:#ffd8df;
+  --pink-softer:#ffe9ee;
+  --cream:#fffdf9;
+  --peach:#ffeede;
+  --yellow:#fff4cf;
+  --mint:#eaf8ef;
+  --lavender:#efe8ff;
+  --orange-soft:#ffd9b3;
+  --orange-softer:#fff2e4;
+  --orange-deep:#c96a1f;
+  --text-dark:#241111;
+  --text-mid:#5f5050;
+  --text-light:#8a7777;
+  --serif:'Cormorant Garamond', serif;
+  --hand:'Patrick Hand', cursive;
+  --shadow-soft: 0 18px 40px rgba(0,0,0,.06);
+  --shadow-lift: 0 25px 45px rgba(0,0,0,.08);
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  overflow-x:hidden;
+  background:linear-gradient(to bottom,var(--bg-top),var(--bg-bottom));
+  font-family:Arial, sans-serif;
+  color:var(--text-dark);
+}
+section{ position:relative; overflow:hidden; padding:110px 80px; }
+img,svg{ display:block; max-width:100%; }
+a{ text-decoration:none; }
+ul{ list-style:none; }
+
+/* Reusable blob background */
+.blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(90px);
+  opacity:.45;
+  z-index:0;
+  width:var(--s,300px);
+  height:var(--s,300px);
+  top:var(--t,auto);
+  left:var(--l,auto);
+  right:var(--r,auto);
+  bottom:var(--b,auto);
+  background:var(--c,var(--pink-soft));
+}
+
+/* Reusable tape strip */
+.tape{
+  width:75px; height:18px;
+  background:#e7d8c4;
+  position:absolute; top:-10px;
+  opacity:.85; z-index:2;
+}
+.tape.left{ left:25px; transform:rotate(-10deg); }
+.tape.right{ right:25px; transform:rotate(10deg); }
+
+/* Reusable eyebrow label */
+.eyebrow{
+  font-family:var(--hand);
+  color:var(--pink);
+  font-size:22px;
+  margin-bottom:10px;
+  position:relative; z-index:5;
+}
+
+/* Reusable italic serif section title */
+.title{
+  font-family:var(--serif);
+  font-style:italic;
+  line-height:.9;
+  position:relative; z-index:5;
+}
+.title span{ color:var(--pink); }
+
+/* Reusable card surface */
+.surface{
+  background:var(--cream);
+  border-radius:20px;
+  box-shadow:var(--shadow-soft);
+  position:relative;
+}
+
+/* Reusable pill button */
+.btn{
+  display:inline-block;
+  padding:14px 30px;
+  border:none;
+  border-radius:40px;
+  background:#fff;
+  color:var(--text-dark);
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,0,0,.07);
+  transition:.35s;
+  font-family:Arial, sans-serif;
+}
+.btn:hover{ transform:translateY(-4px); }
+.btn.solid{ background:var(--pink); color:#fff; }
+.btn.solid:hover{ background:var(--pink-deep); }
+
+/* Shared animations */
+@keyframes fadeUp{ from{opacity:0; transform:translateY(30px)} to{opacity:1; transform:translateY(0)} }
+@keyframes floatY{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes floatCard{ 0%,100%{transform:translateY(0) rotate(var(--r,-2deg))} 50%{transform:translateY(-12px) rotate(0deg)} }
+@keyframes twinkle{ 0%,100%{opacity:.4; transform:scale(1)} 50%{opacity:1; transform:scale(1.2)} }
+@keyframes bounce{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+@keyframes rotateFloat{ 0%,100%{transform:rotate(0)} 50%{transform:rotate(10deg)} }
+
+.floaty{ animation:floatY 5s ease-in-out infinite; }
+.twinkly{ animation:twinkle 3s infinite; }
+.fadein{ animation:fadeUp 1.2s ease; }
+
+/* ============================================= */
+/* NAV                                            */
+/* ============================================= */
+.navbar{
+  width:100%; display:flex; justify-content:space-between; align-items:center;
+  position:relative; z-index:20;
+}
+.logo{ font-size:40px; font-family:var(--hand); color:var(--text-dark); }
+.center-nav{ position:absolute; left:50%; transform:translateX(-50%); }
+.nav-links{
+  display:flex; gap:45px;
+  background:rgba(255,255,255,.45);
+  backdrop-filter:blur(10px);
+  padding:15px 32px;
+  border-radius:60px;
+  box-shadow:0 10px 30px rgba(0,0,0,.04);
+}
+.nav-links a{
+  color:var(--text-mid); font-size:14px; letter-spacing:1px;
+  position:relative; transition:.4s;
+}
+.nav-links a::after{
+  content:""; position:absolute; left:0; bottom:-5px; width:0%; height:1px;
+  background:var(--pink); transition:.4s;
+}
+.nav-links a:hover::after{ width:100%; }
+.nav-links a:hover{ color:var(--pink); }
+
+/* Mobile hamburger — hidden by default, shown only on true phone widths */
+.nav-right{ display:flex; align-items:center; gap:14px; position:relative; }
+.hamburger{
+  display:none; flex-direction:column; gap:5px; cursor:pointer; padding:14px 16px;
+  background:rgba(255,255,255,.45);
+  backdrop-filter:blur(10px);
+  border:none; border-radius:60px;
+  box-shadow:0 10px 30px rgba(0,0,0,.04);
+}
+.hamburger span{ width:26px; height:2px; background:var(--text-dark); border-radius:2px; }
+.mobile-nav{
+  display:none; flex-direction:column; gap:6px;
+  position:absolute; top:calc(100% + 12px); right:0; z-index:30;
+  background:rgba(255,255,255,.97); backdrop-filter:blur(10px);
+  border-radius:18px; padding:18px 26px; box-shadow:var(--shadow-lift);
+}
+.mobile-nav.open{ display:flex; }
+.mobile-nav a{ color:var(--text-mid); font-size:15px; padding:6px 0; }
+.mobile-nav a:hover{ color:var(--pink); }
+
+/* ============================================= */
+/* HERO                                           */
+/* ============================================= */
+.hero{ min-height:100vh; padding:35px 60px; }
+.center{ width:100%; text-align:center; margin-top:50px; position:relative; z-index:10; }
+.welcome{ color:var(--pink); font-size:14px; letter-spacing:1px; margin-bottom:20px; }
+.portfolio{ font-size:180px; font-weight:600; animation:fadeUp 1.4s ease; }
+.roles{
+  margin-top:30px; color:var(--text-light); font-size:12px; letter-spacing:4px;
+  text-transform:uppercase;
+}
+
+.stack-card{
+  width:280px;
+  background:var(--cream);
+  margin:60px auto 0;
+  padding:40px 20px 30px;
+  position:relative;
+  box-shadow:var(--shadow-lift);
+  transform:rotate(-2deg);
+  transition:.5s ease;
+  --r:-2deg;
+  animation:floatCard 5s ease-in-out infinite;
+}
+.stack-card:hover{ transform:rotate(0deg) scale(1.03); }
+.stack-visual{ position:relative; height:150px; }
+.sticker{
+  position:absolute; width:68px; height:68px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px; font-family:Arial, sans-serif; font-weight:700;
+  box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
+.sticker.s1{ top:0; left:6px; background:var(--pink-soft); color:var(--pink-deep); animation:floatY 4s ease-in-out infinite; }
+.sticker.s2{ top:18px; right:0; background:var(--mint); color:#3f6b52; animation:floatY 4.6s ease-in-out infinite .3s; font-size:18px; }
+.sticker.s3{ bottom:8px; left:45px; background:var(--yellow); color:#9a7d1f; animation:floatY 5s ease-in-out infinite .6s; }
+.sticker.s4{ bottom:0; right:40px; background:var(--lavender); color:#6b5aa8; animation:floatY 4.2s ease-in-out infinite .9s; font-size:20px; }
+.caption{ margin-top:14px; font-family:var(--hand); font-size:26px; text-align:center; }
+
+.element{ position:absolute; z-index:3; user-select:none; }
+.envelope{ left:80px; top:300px; font-size:56px; color:var(--pink); }
+.heart{ right:120px; top:250px; font-size:36px; color:var(--pink); }
+.star1{ left:120px; bottom:160px; font-size:32px; color:#9c8a8a; }
+.star2{ right:230px; top:410px; font-size:24px; color:var(--pink); }
+.plus{ right:150px; bottom:110px; font-size:52px; color:var(--pink); animation:rotateFloat 5s ease-in-out infinite; }
+
+.note{
+  position:absolute; background:var(--yellow);
+  padding:18px; box-shadow:0 10px 20px rgba(0,0,0,.05);
+  font-size:14px; line-height:1.6; color:#4d3d3d; z-index:3;
+}
+.note-right{ right:70px; top:500px; width:190px; transform:rotate(-8deg); }
+.note-left{ left:70px; top:500px; width:170px; transform:rotate(6deg); background:var(--pink-softer); }
+
+.scroll{ margin-top:35px; font-size:19px; color:#8f7d7d; font-family:var(--hand); animation:bounce 2s infinite; }
+
+/* ============================================= */
+/* ABOUT                                          */
+/* ============================================= */
+.about-wrapper{ position:relative; z-index:5; margin-top:60px; max-width:800px; margin-left:auto; margin-right:auto; }
+.about-card{ width:100%; padding:55px; --r:0deg; animation:floatCard 5s ease-in-out infinite; }
+.about-card h2{ font-family:var(--hand); color:var(--pink); font-size:44px; margin-bottom:26px; }
+.about-card p{ font-size:19px; line-height:1.85; color:var(--text-mid); margin-bottom:22px; }
+.about-sticky{
+  margin-top:50px; width:280px; background:var(--yellow); padding:20px; border-radius:6px;
+  transform:rotate(-4deg); font-family:var(--hand); font-size:20px; box-shadow:var(--shadow-soft);
+}
+
+/* ============================================= */
+/* WORK                                           */
+/* ============================================= */
+.folder-area{ display:flex; justify-content:center; gap:50px; flex-wrap:wrap; margin:50px 0 10px; }
+.cute-folder{ position:relative; cursor:pointer; transition:.4s; animation:floatY 5s ease-in-out infinite; }
+.cute-folder:hover{ transform:translateY(-8px) scale(1.03); }
+.folder-tab{ width:120px; height:35px; background:var(--pink-soft); border-radius:18px 18px 0 0; margin-left:35px; }
+.folder-body{
+  width:280px; padding:26px; background:var(--pink-softer); border-radius:0 18px 18px 18px;
+  box-shadow:var(--shadow-soft); text-align:center;
+}
+.folder-body h3{ font-family:var(--hand); font-size:30px; color:var(--pink-deep); margin-bottom:6px; }
+.folder-body p{ color:var(--text-mid); margin-bottom:10px; }
+.folder-body span{ font-family:var(--hand); color:var(--pink); font-size:15px; }
+
+.cute-folder.orange .folder-tab{ background:var(--orange-soft); }
+.cute-folder.orange .folder-body{ background:var(--orange-softer); }
+.cute-folder.orange .folder-body h3{ color:var(--orange-deep); }
+.cute-folder.orange .folder-body span{ color:#e08a3f; }
+
+.folder-content{
+  display:none;
+  max-width:1000px; margin:20px auto 0;
+  flex-direction:column; gap:50px;
+}
+.project-card{
+  display:flex; flex-direction:column; gap:28px; padding:40px; border-radius:22px;
+  background:var(--cream); box-shadow:var(--shadow-soft);
+}
+.project-tag{
+  display:inline-block; font-family:var(--hand); color:var(--pink); font-size:16px; margin-bottom:10px;
+}
+.project-text h2{ font-family:var(--serif); font-style:italic; font-size:38px; margin-bottom:14px; }
+.project-text p{ color:var(--text-mid); line-height:1.7; margin-bottom:16px; }
+.project-text ul{ margin-bottom:20px; }
+.project-text li{
+  display:inline-block; background:var(--pink-softer); color:var(--pink-deep);
+  font-size:13px; padding:6px 14px; border-radius:20px; margin:0 6px 6px 0;
+}
+.project-text li.orange{ background:var(--orange-softer); color:var(--orange-deep); }
+
+/* Sliding image carousel — bigger images, below the description */
+.project-gallery{ width:100%; }
+.carousel{ position:relative; width:100%; border-radius:18px; overflow:hidden; box-shadow:var(--shadow-soft); }
+.carousel-track{ display:flex; transition:transform .45s ease; }
+.carousel-track img{ width:100%; flex:0 0 100%; display:block; aspect-ratio:16/9; object-fit:cover; }
+.carousel.portrait .carousel-track img{
+  aspect-ratio:3/4;
+  object-fit:contain;
+  background:var(--pink-softer);
+}
+.carousel-btn{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:42px; height:42px; border-radius:50%; border:none; cursor:pointer;
+  background:rgba(255,255,255,.9); font-size:16px; color:var(--text-dark);
+  box-shadow:0 8px 20px rgba(0,0,0,.12); transition:.3s;
+}
+.carousel-btn:hover{ background:#fff; transform:translateY(-50%) scale(1.08); }
+.carousel-btn.prev{ left:16px; }
+.carousel-btn.next{ right:16px; }
+.carousel-dots{ display:flex; justify-content:center; gap:9px; margin-top:16px; }
+.dot{ width:9px; height:9px; border-radius:50%; background:#e6d8d8; cursor:pointer; transition:.3s; }
+.dot.active{ background:var(--pink); width:22px; border-radius:6px; }
+
+/* ============================================= */
+/* TOOLBOX                                        */
+/* ============================================= */
+.toolbox-title{ text-align:center; position:relative; z-index:5; }
+.toolbox-title h2{ font-size:52px; margin:10px 0; }
+.toolbox-subtitle{ font-size:16px; color:var(--text-mid); max-width:560px; margin:0 auto; }
+.tool-grid{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:22px;
+  margin:60px 0; position:relative; z-index:5;
+}
+.tool-card{ padding:26px; border-radius:16px; position:relative; box-shadow:var(--shadow-soft); }
+.tool-card h3{ font-family:var(--hand); font-size:24px; margin-bottom:6px; }
+.tool-card p{ font-size:13px; color:var(--text-mid); }
+.tool-card.pink{ background:var(--pink-softer); }
+.tool-card.cream{ background:#fff8ef; }
+.tool-card.peach{ background:var(--peach); }
+.tool-card.yellow{ background:var(--yellow); }
+.tool-card.mint{ background:var(--mint); }
+.tool-card.lavender{ background:var(--lavender); }
+
+.tool-group-label{
+  font-family:var(--hand); color:var(--pink); font-size:20px; margin:40px 0 16px; text-align:center;
+}
+.learning-note{
+  max-width:600px; margin:20px auto 0; background:var(--cream); padding:30px;
+  border-radius:16px; box-shadow:var(--shadow-soft); text-align:center; position:relative; z-index:5;
+}
+.learning-note h3{ font-family:var(--hand); color:var(--pink); font-size:26px; margin-bottom:10px; }
+.learning-note p{ color:var(--text-mid); line-height:1.6; }
+
+/* ============================================= */
+/* CONTACT                                        */
+/* ============================================= */
+.contact-title{ text-align:center; font-size:80px; margin-bottom:60px; }
+.contact-wrapper{ display:flex; justify-content:space-between; align-items:flex-start; gap:50px; position:relative; z-index:5; }
+.letter-card{ flex:1.4; padding:45px; overflow:hidden; }
+.letter-card::before{
+  content:""; position:absolute; inset:0;
+  background:repeating-linear-gradient(transparent,transparent 38px,rgba(210,180,180,.3) 39px);
+  pointer-events:none;
+}
+.letter-card::after{ content:""; position:absolute; top:0; left:52px; width:2px; height:100%; background:#efb2b2; opacity:.6; }
+.letter-card h2{ font-family:var(--hand); color:var(--pink); font-size:44px; margin-bottom:30px; position:relative; z-index:2; }
+.letter-card form{ position:relative; z-index:2; }
+.letter-card input, .letter-card textarea{
+  width:100%; background:transparent; border:none; outline:none; font-size:17px;
+  padding:13px 0; margin-bottom:12px; color:#5a4a4a; font-family:Arial, sans-serif;
+}
+.letter-card textarea{ resize:none; height:160px; }
+.letter-card input::placeholder, .letter-card textarea::placeholder{ color:#9a8f8f; }
+
+.contact-side{ width:340px; display:flex; flex-direction:column; gap:26px; }
+
+.contact-card{ padding:28px; }
+.contact-card h3{ margin-bottom:20px; font-family:var(--hand); font-size:30px; color:var(--pink); }
+.info-row{ display:flex; justify-content:space-between; margin:18px 0; border-bottom:1px dashed #eadede; padding-bottom:9px; }
+.info-row span{ color:#766666; }
+.info-row a{ color:var(--pink); font-weight:600; }
+.info-row a:hover{ color:var(--pink-deep); }
+
+.resume-card{ padding:26px; transition:.35s; }
+.resume-card:hover{ transform:translateY(-6px); }
+.resume-card h3{ font-family:var(--hand); font-size:30px; color:var(--pink); margin-bottom:10px; }
+.resume-card p{ color:#766666; margin-bottom:16px; line-height:1.6; }
+.resume-card a{ display:inline-block; padding:12px 22px; border-radius:30px; background:var(--pink); color:#fff; transition:.35s; }
+.resume-card a:hover{ background:var(--pink-deep); }
+
+.contact-footer{ text-align:center; margin-top:70px; color:#6d5d5d; position:relative; z-index:5; }
+.contact-footer p{ font-family:var(--hand); font-size:30px; color:var(--pink); margin-bottom:10px; }
+.contact-footer span{ font-size:14px; letter-spacing:1px; }
+
+/* ============================================= */
+/* RESPONSIVE                                     */
+/* ============================================= */
+@media(max-width:1000px){
+  section{ padding:60px 25px; }
+  .logo{ font-size:30px; }
+  .nav-links{ gap:22px; padding:10px 20px; }
+  .nav-links a{ font-size:12px; letter-spacing:.5px; }
+  .btn{ padding:11px 20px; font-size:13px; }
+  .portfolio{ font-size:90px; }
+  .roles{ font-size:10px; line-height:2; }
+  .stack-card{ width:230px; }
+  .element, .note{ display:none; }
+  .title{ font-size:56px !important; }
+  .about-card{ width:100%; padding:35px; }
+  .tool-grid{ grid-template-columns:repeat(2,1fr); }
+  .contact-wrapper{ flex-direction:column; }
+  .contact-side{ width:100%; }
+  .contact-title{ font-size:52px; }
+}
+
+/* True phone width — nav-links no longer fit, switch to hamburger */
+@media(max-width:640px){
+  .center-nav{ display:none; }
+  .hamburger{ display:flex; }
+}
+
+@media(max-width:480px){
+  section{ padding:45px 18px; }
+  .navbar{ flex-wrap:nowrap; gap:8px; }
+  .nav-right{ gap:8px; }
+  .logo{ font-size:22px; }
+  .hamburger{ padding:11px 13px; }
+  .btn{ padding:10px 16px; font-size:12px; }
+  .portfolio{ font-size:15vw; }
+  .roles{ font-size:9px; letter-spacing:2px; }
+  .stack-card{ width:190px; padding:28px 14px 20px; }
+  .title{ font-size:38px !important; }
+  .about-card{ padding:24px; }
+  .about-card h2{ font-size:30px; }
+  .about-card p{ font-size:16px; }
+  .folder-body{ width:220px; padding:18px; }
+  .folder-area{ gap:24px; }
+  .project-card{ padding:22px; gap:20px; }
+  .project-text h2{ font-size:28px; }
+  .carousel-btn{ width:34px; height:34px; font-size:13px; }
+  .tool-grid{ grid-template-columns:repeat(2,1fr); gap:14px; }
+  .tool-card{ padding:16px; }
+  .tool-card h3{ font-size:19px; }
+  .contact-title{ font-size:34px; }
+  .letter-card, .contact-card, .resume-card{ padding:22px; }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ============================================= -->
+<!-- HERO                                           -->
+<!-- ============================================= -->
+<section class="hero" id="home">
+
+  <div class="blob" style="--s:350px;--t:-120px;--l:-120px;--c:var(--pink-soft)"></div>
+  <div class="blob" style="--s:320px;--r:-100px;--b:-100px;--c:var(--pink-softer)"></div>
+
+  <nav class="navbar">
+    <a href="#home" class="logo">Kripa Kadodwala.</a>
+    <div class="center-nav">
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="#contact" class="btn">say hi ♡</a>
+      <div class="mobile-nav" id="mobileNav">
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="element envelope floaty">✉</div>
+  <div class="element heart floaty">♡</div>
+  <div class="element plus">＋</div>
+  <div class="element star1 twinkly">✧</div>
+  <div class="element star2 twinkly">✦</div>
+
+  <div class="note note-right floaty">design is just my love letter to the world ♡</div>
+  <div class="note note-left floaty">currently collecting beautiful moments ✨</div>
+
+  <div class="center">
+    <p class="welcome fadein">welcome to my little corner of the internet ♡</p>
+    <h1 class="portfolio">portfolio</h1>
+    <p class="roles fadein">creative designer · ui/ux enthusiast · digital marketer · creative technologist</p>
+
+    <div class="stack-card">
+      <div class="tape left"></div>
+      <div class="tape right"></div>
+      <div class="stack-visual">
+        <div class="sticker s1">✎</div>
+        <div class="sticker s2">&lt;/&gt;</div>
+        <div class="sticker s3">♡</div>
+        <div class="sticker s4">✦</div>
+      </div>
+      <div class="caption">design ♡ code</div>
+    </div>
+
+    <div class="scroll">scroll, lovely ↓</div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- ABOUT                                          -->
+<!-- ============================================= -->
+<section class="about" id="about">
+  <div class="blob" style="--s:300px;--t:0;--l:-120px;--c:var(--pink-soft)"></div>
+  <div class="blob" style="--s:250px;--b:-50px;--r:-70px;--c:var(--pink-softer)"></div>
+
+  <p class="eyebrow">page 02</p>
+  <h1 class="title" style="font-size:88px;margin-bottom:20px">a little <span>about</span> me</h1>
+
+  <div class="about-wrapper">
+    <div class="about-card surface">
+      <div class="tape left"></div>
+      <div class="tape right"></div>
+      <h2>hi, I am Kripa Kadodwala ♡</h2>
+      <p>I am a final year BCA student with a genuine love for both Software Development and UI/UX Design. I like poking around new technologies, picking up new skills, and actually putting them to use through real academic and personal projects.</p>
+	  <p>Along the way I've gotten hands-on with programming, web development, databases, mobile app development, IoT, and UI/UX design and prototyping and a bit of everything, honestly, and I am still figuring out what I love most.</p>
+      <p>Right now I'm focused on sharpening my technical skills, building projects that actually mean something, and staying open to wherever tech takes me next. Always up for learning something new. ♡</p>
+    </div>
+  </div>
+
+  <div class="about-sticky floaty">based in the internet, born in india ♡</div>
+</section>
+
+<!-- ============================================= -->
+<!-- WORK                                           -->
+<!-- ============================================= -->
+<section class="work-section" id="work">
+  <div class="blob" style="--s:320px;--l:-100px;--t:0;--c:var(--pink-soft)"></div>
+  <div class="blob" style="--s:280px;--r:-80px;--b:0;--c:var(--pink-softer)"></div>
+
+  <p class="eyebrow">page 03</p>
+  <h1 class="title" style="font-size:88px;margin-bottom:10px">the <span>work</span> folders</h1>
+
+  <div class="folder-area">
+    <div class="cute-folder" onclick="toggleFolder('folderContent','folderArrow')">
+      <div class="folder-tab"></div>
+      <div class="folder-body">
+        <h3>UI/UX Design</h3>
+        <p>2 Projects</p>
+        <span id="folderArrow">click to open ✦</span>
+      </div>
+    </div>
+
+    <div class="cute-folder orange" onclick="toggleFolder('folderContentIot','folderArrowIot')">
+      <div class="folder-tab"></div>
+      <div class="folder-body">
+        <h3>IoT</h3>
+        <p>1 Project</p>
+        <span id="folderArrowIot">click to open ✦</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="folder-content" id="folderContent">
+
+    <div class="project-card">
+      <div class="project-text">
+        <div class="project-tag">featured project</div>
+        <h2>SpeedToll</h2>
+        <p>Fast & seamless toll payments app designed to simplify toll management and improve travel experiences through intuitive mobile interactions.</p>
+        <ul>
+          <li>Mobile UI Design</li>
+          <li>User Experience Design</li>
+          <li>Interactive Prototyping</li>
+          <li>Design Systems</li>
+        </ul>
+        <a href="https://www.figma.com/design/CvHQJphZRisODM1zXN85M6/toll--Copy-?node-id=0-1&t=qMAVtAIY1YYhmwDr-1" target="_blank" rel="noopener" class="btn solid">View Prototype →</a>
+      </div>
+      <div class="project-gallery">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/speedtoll1.png" alt="SpeedToll screen 1">
+            <img src="images/speedtoll2.png" alt="SpeedToll screen 2">
+            <img src="images/speedtoll3.png" alt="SpeedToll screen 3">
+          </div>
+          <button class="carousel-btn prev" aria-label="Previous image">&#10094;</button>
+          <button class="carousel-btn next" aria-label="Next image">&#10095;</button>
+        </div>
+        <div class="carousel-dots"></div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-text">
+        <div class="project-tag">hackathon project</div>
+        <h2>MindUnwind</h2>
+        <p>Mental wellness and self-care platform focused on stress management, emotional reflection and habit building through a calm, supportive experience.</p>
+        <ul>
+          <li>Mood Tracking</li>
+          <li>Journaling Experience</li>
+          <li>Community Support</li>
+          <li>Progress Tracking</li>
+        </ul>
+        <a href="https://www.figma.com/design/JWa6TptsqwFwwIx0l8cNV4/MindUnwind?t=qMAVtAIY1YYhmwDr-1" target="_blank" rel="noopener" class="btn solid">View Prototype →</a>
+      </div>
+      <div class="project-gallery">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/mind1.png" alt="MindUnwind screen 1">
+            <img src="images/mind2.png" alt="MindUnwind screen 2">
+            <img src="images/mind3.png" alt="MindUnwind screen 3">
+			<img src="images/mind4.png" alt="MindUnwind screen 4">
+          </div>
+          <button class="carousel-btn prev" aria-label="Previous image">&#10094;</button>
+          <button class="carousel-btn next" aria-label="Next image">&#10095;</button>
+        </div>
+        <div class="carousel-dots"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- IoT folder content -->
+  <div class="folder-content" id="folderContentIot">
+
+    <div class="project-card">
+      <div class="project-text">
+        <div class="project-tag" style="color:var(--orange-deep)">iot project</div>
+        <h2>Smart Accident &amp; Disaster Alert System</h2>
+        <p>Arduino-based IoT safety system built for two real-world hazard scenarios: blind mountain-curve vehicle collisions and flood risk from rising water levels. Ultrasonic sensors on each side of the road trigger a warning LED on the opposite side, while a water-level sensor triggers a buzzer as an early flood alert.</p>
+        <ul>
+          <li class="orange">Arduino UNO</li>
+          <li class="orange">Ultrasonic Sensors</li>
+          <li class="orange">Embedded C</li>
+          <li class="orange">IoT</li>
+        </ul>
+        <a href="https://github.com/Kripa19-08/smart-accident-disaster-alert-system" target="_blank" rel="noopener" class="btn solid" style="background:var(--orange-deep)">View on GitHub →</a>
+      </div>
+      <div class="project-gallery">
+        <div class="carousel portrait">
+          <div class="carousel-track">
+            <img src="images/model.jpeg" alt="Smart Accident & Disaster Alert System model">
+            <img src="images/working.jpeg" alt="Wiring and components">
+          </div>
+          <button class="carousel-btn prev" aria-label="Previous image">&#10094;</button>
+          <button class="carousel-btn next" aria-label="Next image">&#10095;</button>
+        </div>
+        <div class="carousel-dots"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- TOOLBOX                                        -->
+<!-- ============================================= -->
+<section class="toolbox" id="skills">
+  <div class="blob" style="--s:300px;--t:-80px;--r:-100px;--c:var(--pink-soft)"></div>
+  <div class="blob" style="--s:260px;--b:-60px;--l:-90px;--c:var(--pink-softer)"></div>
+
+  <div class="toolbox-title">
+    <p class="eyebrow" style="text-align:center">page 04</p>
+    <h2 class="title">my <span>toolbox</span></h2>
+    <p class="toolbox-subtitle">The tools, technologies and creative skills I use to transform ideas into beautiful digital experiences.</p>
+  </div>
+
+  <p class="tool-group-label">Design</p>
+  <div class="tool-grid">
+    <div class="tool-card pink"><h3>Figma</h3><p>Wireframes · UI Design · Prototyping</p></div>
+    <div class="tool-card cream"><h3>Canva</h3><p>Social Media · Branding · Presentations</p></div>
+    <div class="tool-card lavender"><h3>UI/UX Design</h3><p>User Research · User Flow · Design Systems</p></div>
+    <div class="tool-card peach"><h3>ChatGPT</h3><p>AI Workflows · Prompt Engineering</p></div>
+  </div>
+
+  <p class="tool-group-label">Development</p>
+  <div class="tool-grid">
+    <div class="tool-card mint"><h3>HTML5</h3><p>Semantic Structure</p></div>
+    <div class="tool-card yellow"><h3>CSS3</h3><p>Responsive Layouts · Animations</p></div>
+    <div class="tool-card pink"><h3>Java</h3><p>Object Oriented Programming</p></div>
+    <div class="tool-card cream"><h3>Python</h3><p>Programming Fundamentals</p></div>
+    <div class="tool-card lavender"><h3>C Programming</h3><p>Problem Solving</p></div>
+    <div class="tool-card mint"><h3>C++</h3><p>Programming Concepts</p></div>
+    <div class="tool-card peach"><h3>DBMS</h3><p>Database Management</p></div>
+    <div class="tool-card yellow"><h3>ASP.Net</h3><p>Web Application Framework</p></div>
+    <div class="tool-card pink"><h3>PHP</h3><p>Server-Side Scripting</p></div>
+    <div class="tool-card lavender"><h3>Android</h3><p>Mobile App Development</p></div>
+    <div class="tool-card peach"><h3>Digital Marketing</h3><p>SEO · Branding · Campaigns</p></div>
+  </div>
+
+  <div class="learning-note">
+    <h3>Currently Learning ✨</h3>
+    <p>Deepening my skills in web development and exploring new frameworks and languages, while staying curious about how design and development come together to build better digital experiences.</p>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- CONTACT                                        -->
+<!-- ============================================= -->
+<section class="contact-page" id="contact">
+  <div class="blob" style="--s:300px;--t:-120px;--l:-100px;--c:var(--pink-soft)"></div>
+  <div class="blob" style="--s:280px;--b:-100px;--r:-120px;--c:var(--pink-softer)"></div>
+
+  <p class="eyebrow" style="text-align:center">page 05 • the last one ♡</p>
+  <h1 class="title contact-title">let's make <span>something</span> together</h1>
+
+  <div class="contact-wrapper">
+    <div class="letter-card surface">
+      <div class="tape left"></div>
+      <h2>dear recruiter,</h2>
+      <form action="mailto:kripak1908@gmail.com" method="post" enctype="text/plain">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <input type="text" name="subject" placeholder="Subject">
+        <textarea name="message" placeholder="I'd love to discuss an opportunity..." required></textarea>
+        <button type="submit" class="btn solid">Send Message →</button>
+      </form>
+    </div>
+
+    <div class="contact-side">
+      <div class="contact-card surface">
+        <h3>find me here</h3>
+
+        <div class="info-row">
+          <span>LinkedIn</span>
+          <a href="https://www.linkedin.com/in/kripakadodwala" target="_blank" rel="noopener">Kripa Kadodwala</a>
+        </div>
+
+        <div class="info-row">
+          <span>Email</span>
+          <a href="mailto:kripak1908@gmail.com">kripak1908@gmail.com</a>
+        </div>
+		<div class="info-row">
+		  <span>GitHub</span>
+		  <a href="https://github.com/Kripa19-08" target="_blank" rel="noopener">Kripa19-08</a>
+		</div>
+      </div>
+
+      <div class="resume-card surface">
+        <h3>Resume</h3>
+        <p>View my latest resume.</p>
+        <!-- EDIT ME: upload your resume PDF next to this HTML file and match the filename here -->
+        <a href="Kripa_Resume.pdf" target="_blank" rel="noopener">View Resume ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-footer">
+    <p>Thank you for visiting ♡</p>
+    <span>Made with ♡ by Kripa Kadodwala</span>
+  </div>
+</section>
+
+<script>
+// Parallax for hero floating elements
+document.addEventListener("mousemove",(e)=>{
+  document.querySelectorAll(".element").forEach((el,i)=>{
+    const speed=(i+1)*0.01;
+    const x=(window.innerWidth - e.pageX*speed)/90;
+    const y=(window.innerHeight - e.pageY*speed)/90;
+    el.style.transform=`translate(${x}px,${y}px)`;
+  });
+});
+
+// Mobile hamburger menu toggle
+const hamburgerBtn=document.getElementById("hamburgerBtn");
+const mobileNav=document.getElementById("mobileNav");
+hamburgerBtn.addEventListener("click",()=>mobileNav.classList.toggle("open"));
+mobileNav.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>mobileNav.classList.remove("open")));
+
+// Image carousels — works for every .carousel on the page automatically
+document.querySelectorAll(".carousel").forEach(carousel=>{
+  const track=carousel.querySelector(".carousel-track");
+  const images=track.querySelectorAll("img");
+  const dotsWrap=carousel.parentElement.querySelector(".carousel-dots");
+  let index=0;
+
+  images.forEach((_,i)=>{
+    const dot=document.createElement("div");
+    dot.className="dot"+(i===0?" active":"");
+    dot.addEventListener("click",()=>goTo(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  function goTo(i){
+    index=(i+images.length)%images.length;
+    track.style.transform=`translateX(-${index*100}%)`;
+    dotsWrap.querySelectorAll(".dot").forEach((d,di)=>d.classList.toggle("active",di===index));
+  }
+
+  carousel.querySelector(".prev").addEventListener("click",()=>goTo(index-1));
+  carousel.querySelector(".next").addEventListener("click",()=>goTo(index+1));
+});
+
+// Work folder toggle — pass the ids of the folder's content div + its arrow span
+function toggleFolder(contentId, arrowId){
+  const content=document.getElementById(contentId);
+  const arrow=document.getElementById(arrowId);
+  const open=content.style.display==="flex";
+  content.style.display=open?"none":"flex";
+  arrow.textContent=open?"click to open ✦":"click to close ✦";
+}
+
+// Scroll reveal for contact section cards
+window.addEventListener("DOMContentLoaded",()=>{
+  const items=[document.querySelector(".letter-card"),document.querySelector(".sticky-note"),document.querySelector(".resume-card")];
+  items.forEach(item=>{
+    if(!item) return;
+    item.style.opacity="0";
+    item.style.transform="translateY(60px)";
+    item.style.transition="all .8s ease";
+  });
+  window.addEventListener("scroll",()=>{
+    const trigger=window.innerHeight*0.85;
+    items.forEach(item=>{
+      if(!item) return;
+      if(item.getBoundingClientRect().top<trigger){
+        item.style.opacity="1";
+        item.style.transform="translateY(0px)";
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
